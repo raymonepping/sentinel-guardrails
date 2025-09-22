@@ -1,0 +1,2 @@
+import "tfplan/v2" as tfplan
+main = rule { length(tfplan.resource_changes) >= 0 }
