@@ -1,4 +1,4 @@
-import "tfplan/v2" as tfplan
+import "tfplan" as tfplan
 
 containers = filter tfplan.resource_changes as rc {
   rc.type == "docker_container" and
