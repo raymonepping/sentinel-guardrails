@@ -1,7 +1,7 @@
 import "tfplan/v2" as tfplan
 
 containers = filter tfplan.resource_changes as rc {
-  rc.type is "docker_container" and
+  rc.type == "docker_container" and
   (rc.change.actions contains "create" or rc.change.actions contains "update")
 }
 

@@ -1,7 +1,7 @@
 import "tfplan/v2" as tfplan
 
 images = filter tfplan.resource_changes as rc {
-  rc.type is "docker_image" and
+  rc.type == "docker_image" and
   (rc.change.actions contains "create" or rc.change.actions contains "update")
 }
 
