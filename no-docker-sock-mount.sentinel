@@ -1,0 +1,17 @@
+import "tfplan/v2" as tfplan
+
+containers = filter tfplan.resource_changes as rc {
+  rc.type is "docker_container" and
+  (rc.change.actions contains "create" or rc.change.actions contains "update")
+}
+
+mounts_ok = all containers as rc {
+  (rc.change.after.mounts is null)
+  ? true
+  : not any rc.change.after.mounts as mm {
+      (("target" in keys(mm)) and mm.target == "/var/run/docker.sock") or
+      (("source" in keys(mm)) and mm.source == "/var/run/docker.sock")
+    }
+}
+
+main = mounts_ok

@@ -1,0 +1,12 @@
+import "tfplan/v2" as tfplan
+
+images = filter tfplan.resource_changes as rc {
+  rc.type is "docker_image" and
+  (rc.change.actions contains "create" or rc.change.actions contains "update")
+}
+
+no_latest = all images as i {
+  ("name" in keys(i.change.after)) and not endswith(i.change.after.name, ":latest")
+}
+
+main = no_latest

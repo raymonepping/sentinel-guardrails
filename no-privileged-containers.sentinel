@@ -1,0 +1,16 @@
+import "tfplan/v2" as tfplan
+
+containers = filter tfplan.resource_changes as rc {
+  rc.type is "docker_container" and
+  (rc.change.actions contains "create" or rc.change.actions contains "update")
+}
+
+privileged_ok = all containers as rc {
+  not (("privileged" in keys(rc.change.after)) and rc.change.after.privileged)
+}
+
+hostnet_ok = all containers as rc {
+  not (("network_mode" in keys(rc.change.after)) and rc.change.after.network_mode == "host")
+}
+
+main = privileged_ok and hostnet_ok
